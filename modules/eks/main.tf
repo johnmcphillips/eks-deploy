@@ -6,7 +6,7 @@ resource "aws_eks_cluster" "main" {
   role_arn = aws_iam_role.eks_cluster_role.arn
   version  = var.cluster_version
   vpc_config {
-    subnet_ids = module.vpc.private_subnet_ids
+    subnet_ids         = module.vpc.private_subnet_ids
     security_group_ids = [aws_security_group.eks_cluster_sg.id]
   }
 }
@@ -24,10 +24,32 @@ resource "aws_eks_node_group" "node_group" {
   }
 }
 
+resource "kubernetes_config_map" "auth" {
+  depends_on = [aws_eks_cluster.main]
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
+  }
+  data = {
+    mapRoles = jsonencode([
+      {
+        rolearn  = aws_iam_role.eks_node_role.arn
+        username = "system:node:{{EC2PrivateDNSName}}"
+        groups   = ["system:bootstrappers", "system:nodes"]
+      },
+      {
+        rolearn  = var.eks_admin
+        username = "admin"
+        groups   = ["system:masters"]
+      }
+    ])
+  }
+}
+
 resource "aws_security_group" "eks_cluster_sg" {
   name        = "eks-cluster-sg"
   description = "EKS Cluster security group"
-  vpc_id      = module.vpc.vpc_id 
+  vpc_id      = module.vpc.vpc_id
 
   ingress {
     description = "Allow worker nodes and kubectl access"
@@ -59,10 +81,10 @@ resource "aws_security_group" "eks_node_sg" {
   }
 
   ingress {
-    description = "Allow nodes to talk to API server"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
+    description     = "Allow nodes to talk to API server"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
     security_groups = [aws_security_group.eks_cluster_sg.id]
   }
 

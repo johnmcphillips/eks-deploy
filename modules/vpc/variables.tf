@@ -1,5 +1,5 @@
 variable "vpc_name" {
-  default     = "main"
+  default = "main"
 }
 
 variable "vpc_cidr_block" {
@@ -12,7 +12,7 @@ variable "PublicSubnet01" {
   default = {
     "name"       = "PublicSubnet01"
     "cidr_block" = "10.0.101.0/24"
-    }
+  }
 }
 
 variable "PublicSubnet02" {
@@ -21,16 +21,16 @@ variable "PublicSubnet02" {
   default = {
     "name"       = "PublicSubnet02"
     "cidr_block" = "10.0.102.0/24"
-    }
+  }
 }
 
 variable "PublicSubnet03" {
-    description = "PublicSubnet03"
-    type = map(string)
-    default = {
-        "name" = "PublicSubnet03"
-        "cidr_block" = "10.0.103.0/24"
-    }
+  description = "PublicSubnet03"
+  type        = map(string)
+  default = {
+    "name"       = "PublicSubnet03"
+    "cidr_block" = "10.0.103.0/24"
+  }
 }
 
 variable "PrivateSubnet01" {
