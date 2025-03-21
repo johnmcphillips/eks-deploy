@@ -1,9 +1,7 @@
 variable "eks_admin" {
   description = "EKS IAM Admin Role"
   type        = string
-  sensitive   = true
 }
-
 variable "cluster_version" {
   description = "EKS Cluster Version"
   default     = "1.32"

@@ -3,4 +3,5 @@ provider "aws" {
 }
 module "eks" {
   source = "./modules/eks"
+  eks_admin = var.eks_admin
 }
